@@ -31,6 +31,8 @@ public class Window extends JFrame {
     private JLabel maximus;
     private JLabel sampleLabel;
     private JButton exportButton;
+    private JPanel calculatePanel;
+    private JPanel metricPanel;
     private HashMap<String, String> analysis;
     private final SampleAnalyzer sampleAnalyzer = new SampleAnalyzer();
 
