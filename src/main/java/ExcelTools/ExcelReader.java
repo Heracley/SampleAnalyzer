@@ -28,8 +28,8 @@ public class ExcelReader {
         return sheetNames;
     }
 
-    public static List<String> getSampleNames(File file, String sheetName) {
-        List<String> sampleNames = new ArrayList<>();
+    public static List<String> getHeads(File file, String sheetName) {
+        List<String> heads = new ArrayList<>();
 
         try {
             Workbook workbook = WorkbookFactory.create(file);
@@ -43,7 +43,7 @@ public class ExcelReader {
 
                     while (cellIterator.hasNext()) {
                         Cell cell = cellIterator.next();
-                        sampleNames.add(cell.toString());
+                        heads.add(cell.toString());
                     }
                 }
             }
@@ -54,11 +54,11 @@ public class ExcelReader {
             System.err.println("Ошибка: " + e.getMessage());
         }
 
-        return sampleNames;
+        return heads;
     }
 
-    public static HashMap<String, List<Double>> getSample(File file, String sheetName, String sampleName) {
-        HashMap<String, List<Double>> sampleData = new HashMap<>();
+    public static List<Double> getColumnDataByHead(File file, String sheetName, String head) {
+        List<Double> columnData = new ArrayList<>();
 
         try (FileInputStream fis = new FileInputStream(file)) {
             Workbook workbook = WorkbookFactory.create(fis);
@@ -71,17 +71,13 @@ public class ExcelReader {
                 // Находим индекс столбца с указанным именем выборки
                 for (int i = 0; i < headerRow.getLastCellNum(); i++) {
                     Cell cell = headerRow.getCell(i);
-                    if (cell != null && cell.getCellType() == CellType.STRING && cell.getStringCellValue().equals(sampleName)) {
+                    if (cell != null && cell.getCellType() == CellType.STRING && cell.getStringCellValue().equals(head)) {
                         columnIndex = i;
                         break;
                     }
                 }
 
                 if (columnIndex != -1) {
-                    // Создаем пустой список для значений выборки
-                    List<Double> sampleValues = new ArrayList<>();
-                    sampleData.put(sampleName, sampleValues);
-
                     // Извлекаем значения из столбца, начиная со второй строки
                     for (int rowIndex = 1; rowIndex <= sheet.getLastRowNum(); rowIndex++) {
                         Row row = sheet.getRow(rowIndex);
@@ -89,7 +85,7 @@ public class ExcelReader {
                             Cell cell = row.getCell(columnIndex);
                             if (cell != null && cell.getCellType() == CellType.NUMERIC) {
                                 double value = cell.getNumericCellValue();
-                                sampleValues.add(value); // Добавляем значение в список значений выборки
+                                columnData.add(value); // Добавляем значение в список значений выборки
                             }
                         }
                     }
@@ -99,6 +95,6 @@ public class ExcelReader {
             System.out.println("Ошибка при чтении файла Excel: " + e.getMessage());
         }
 
-        return sampleData;
+        return columnData;
     }
 }
