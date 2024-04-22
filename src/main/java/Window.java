@@ -64,6 +64,12 @@ public class Window extends JFrame {
                 int result = fileChooser.showOpenDialog(null);
 
                 if (result == JFileChooser.APPROVE_OPTION) {
+                    File selectedFile = fileChooser.getSelectedFile();
+                    if (!selectedFile.getName().toLowerCase().endsWith(".xlsx")) {
+                        JOptionPane.showMessageDialog(null, "Выберите файл формата .xlsx", "Ошибка", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
                     sampleAnalyzer.loadData(fileChooser.getSelectedFile());
                     chosenLabel.setText("Выбран датасет: " + sampleAnalyzer.getFileName());
 
